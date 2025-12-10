@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.0] - 2025-12-10
+
+### Added
+- Support for Schema 10 (Segment 10 - DAPMTBHL) parsing.
+- `DaPermitBhlRecord` model.
+
 ## [0.9.0] - 2025-12-10
 
 ### Added

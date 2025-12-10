@@ -8,7 +8,8 @@ from .schemas.da_can_restr import DA_CAN_RESTR_FIELDS
 from .schemas.da_can_restr_field import DA_CAN_RESTR_FIELD_FIELDS
 from .schemas.da_free_restr import DA_FREE_RESTR_FIELDS
 from .schemas.da_free_restr_field import DA_FREE_RESTR_FIELD_FIELDS
-from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, DaCanRestrFieldRecord, DaFreeRestrRecord, DaFreeRestrFieldRecord, W1RecordGroup
+from .schemas.da_permit_bhl import DA_PERMIT_BHL_FIELDS
+from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, DaCanRestrFieldRecord, DaFreeRestrRecord, DaFreeRestrFieldRecord, DaPermitBhlRecord, W1RecordGroup
 import json
 
 class W1Parser:
@@ -96,6 +97,8 @@ class W1Parser:
                                     current_record['09'] = []
                                 current_record['09'].append(parsed_record)
                                 parsed_record = None
+                        elif record_id == '10':
+                             parsed_record = self._parse_da_permit_bhl(line)
                         
                         # Add to current record if parsed
                         if parsed_record:
@@ -170,6 +173,10 @@ class W1Parser:
     def _parse_da_free_restr_field(self, line: str) -> DaFreeRestrFieldRecord:
         data = self._extract_fields(line, DA_FREE_RESTR_FIELD_FIELDS)
         return DaFreeRestrFieldRecord(**data)
+
+    def _parse_da_permit_bhl(self, line: str) -> DaPermitBhlRecord:
+        data = self._extract_fields(line, DA_PERMIT_BHL_FIELDS)
+        return DaPermitBhlRecord(**data)
 
     def _extract_fields(self, line: str, fields: List[Any]) -> Dict[str, Any]:
         data = {}
