@@ -5,7 +5,8 @@ from .schemas.da_field import DA_FIELD_FIELDS
 from .schemas.da_field_specific import DA_FIELD_SPECIFIC_FIELDS
 from .schemas.da_field_bhl import DA_FIELD_BHL_FIELDS
 from .schemas.da_can_restr import DA_CAN_RESTR_FIELDS
-from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, W1RecordGroup
+from .schemas.da_can_restr_field import DA_CAN_RESTR_FIELD_FIELDS
+from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, DaCanRestrFieldRecord, W1RecordGroup
 import json
 
 class W1Parser:
@@ -72,6 +73,13 @@ class W1Parser:
                                 current_record['06'].append(parsed_record)
                                 # Set to None so it doesn't get added by the generic logic below
                                 parsed_record = None
+                        elif record_id == '07':
+                             parsed_record = self._parse_da_can_restr_field(line)
+                             if parsed_record:
+                                if '07' not in current_record:
+                                    current_record['07'] = []
+                                current_record['07'].append(parsed_record)
+                                parsed_record = None
 
                         # Add to current record if parsed
                         if parsed_record:
@@ -134,6 +142,10 @@ class W1Parser:
     def _parse_da_can_restr(self, line: str) -> DaCanRestrRecord:
         data = self._extract_fields(line, DA_CAN_RESTR_FIELDS)
         return DaCanRestrRecord(**data)
+
+    def _parse_da_can_restr_field(self, line: str) -> DaCanRestrFieldRecord:
+        data = self._extract_fields(line, DA_CAN_RESTR_FIELD_FIELDS)
+        return DaCanRestrFieldRecord(**data)
 
     def _extract_fields(self, line: str, fields: List[Any]) -> Dict[str, Any]:
         data = {}

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2025-12-10
+
+### Added
+- Support for Schema 07 (Segment 7 - DACANFLD) parsing.
+- `DaCanRestrFieldRecord` model.
+- Recurring segment support for '07'.
+
 ## [0.6.0] - 2025-12-10
 
 ### Added
