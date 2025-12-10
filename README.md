@@ -18,7 +18,12 @@ pip install w1_py_parse
 from w1_py_parse import W1Parser
 
 parser = W1Parser()
+# Parse all schemas (default)
 parser.parse_file("path/to/data.dat")
+
+# Parse specific schemas by name or ID
+# parser.parse_file("path/to/data.dat", schemas=["DAROOT"])
+
 print(parser.records)
 ```
 

@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="w1_py_parse",
-    version="0.1.2",
+    version="0.1.3",
     description="Parser for Texas RRC W-1 data files",
     long_description=long_description,
     long_description_content_type='text/markdown',

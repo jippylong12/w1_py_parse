@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2025-12-10
+
+### Changed
+- Refactored `Schema01` to `DaRootRecord` to match official RRC naming.
+- `W1Parser.parse_file` now accepts a `schemas` argument for filtering by name (e.g., 'DAROOT') or ID (e.g., '01').
+
+### Added
+- Schema registry with placeholders for all 15 RRC segments.
+
 ## [0.1.2] - 2025-12-10
 
 ### Added
