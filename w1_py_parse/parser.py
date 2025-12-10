@@ -15,13 +15,14 @@ from .schemas.da_check_register import DA_CHECK_REGISTER_FIELDS
 from .schemas.da_surface_loc import DA_SURFACE_LOC_FIELDS
 from .schemas.da_bottom_hole_loc import DA_BOTTOM_HOLE_LOC_FIELDS
 from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, DaCanRestrFieldRecord, DaFreeRestrRecord, DaFreeRestrFieldRecord, DaPermitBhlRecord, DaAlternateAddressRecord, DaRemarkRecord, DaCheckRegisterRecord, DaSurfaceLocationRecord, DaBottomHoleLocationRecord, W1RecordGroup
+from .lookups import COUNTY_CODES, WELL_STATUS_CODES, TYPE_WELL_CODES, CANNED_RESTRICTIONS
 import json
 
 class W1Parser:
     def __init__(self):
         self.records: List[W1RecordGroup] = []
 
-    def parse_file(self, filepath: str, schemas: Optional[List[Union[str, int]]] = None) -> List[W1RecordGroup]:
+    def parse_file(self, filepath: str, schemas: Optional[List[Union[str, int]]] = None, transform_codes: bool = False) -> List[W1RecordGroup]:
         """
         Parse a W1/RRC data file.
         
@@ -29,6 +30,7 @@ class W1Parser:
             filepath: Path to the file.
             schemas: List of schema identifiers to parse. Can be IDs ('01', 1) or names ('DAROOT').
                      If None, defaults to parsing all known/supported schemas.
+            transform_codes: If True, replaces codes (e.g. County Code) with readable strings.
                      
         Returns:
             List[W1RecordGroup]: A list of grouped records. Use .to_json() on items.
@@ -52,6 +54,8 @@ class W1Parser:
                     # Start of a new logical record
                     # If we were building one, save it
                     if current_record is not None:
+                        if transform_codes:
+                            self._transform_group(current_record)
                         self.records.append(current_record)
                     
                     # Parse 01
@@ -142,6 +146,8 @@ class W1Parser:
 
             # End of file: append last record
             if current_record is not None:
+                if transform_codes:
+                    self._transform_group(current_record)
                 self.records.append(current_record)
                 
         return self.records
@@ -265,6 +271,65 @@ class W1Parser:
                 
             data[name] = val
         return data
+
+    def _transform_group(self, group: W1RecordGroup) -> None:
+        """
+        Apply transformations to all records in a group.
+        """
+        for key, value in group.items():
+            if isinstance(value, list):
+                for item in value:
+                     if isinstance(item, RRCRecord):
+                        self._apply_transformations(item)
+            elif isinstance(value, RRCRecord):
+                 self._apply_transformations(value)
+
+    def _apply_transformations(self, record: RRCRecord) -> None:
+        """
+        Apply lookup transformations to a single record.
+        """
+        if isinstance(record, DaRootRecord):
+            if record.county_code in COUNTY_CODES:
+                record.county_code = COUNTY_CODES[record.county_code]
+                
+        elif isinstance(record, DaPermitRecord):
+            if record.county_code in COUNTY_CODES:
+                record.county_code = COUNTY_CODES[record.county_code]
+            if record.onshore_county in COUNTY_CODES:
+                record.onshore_county = COUNTY_CODES[record.onshore_county]
+            
+            # Well Status
+            if record.well_status in WELL_STATUS_CODES:
+                record.well_status = WELL_STATUS_CODES[record.well_status]
+                
+            # Type Application (Type Well)
+            if record.type_application in TYPE_WELL_CODES:
+                record.type_application = TYPE_WELL_CODES[record.type_application]
+                
+        elif isinstance(record, DaCanRestrRecord):
+            # Canned Restrictions
+            if record.restriction_type in CANNED_RESTRICTIONS:
+                # Often the restriction_type is just the code, but we might want to store the narrative alone
+                # or replace the code? The user said "show the transformed data".
+                # For restrictions, the narrative is the value. The code is just a key.
+                # However, DaCanRestrRecord has 'restriction_type' (str) and 'restriction_remark' (str)?
+                # Wait. In DaCanRestrRecord:
+                # restriction_key (int)
+                # restriction_type (str, length 2) -> matches "A ", "A1", "01" etc.
+                # restriction_remark (str, length 35).
+                # The manual says: "THESE CANNED RESTRICTIONS ARE PRINTED ON THE ACTUAL PERMIT... A 'Z' CANNED RESTRICTION INDICATES... FREE-FORM".
+                # The narrative provided in the manual is very long (e.g. "REGULAR PROVIDED THIS WELL IS NEVER COMPLETED...").
+                # Where does this narrative go?
+                # DaCanRestrRecord has `restriction_remark` of length 35. That's likely for free-form or short args.
+                # The Narrative itself might not fit in `restriction_remark`.
+                # But the user asked to "show the transformed data".
+                # Maybe I should replace `restriction_type` with the narrative?
+                # But `restriction_type` is defined as str (length 2 in schema, but str in model).
+                # If I replace it with a 200-char string, it fits in Python str.
+                # It might be confusing if `restriction_type` becomes a long sentence.
+                # But that's what "transformed data" implies.
+                record.restriction_type = CANNED_RESTRICTIONS[record.restriction_type]
+
 
     def to_json(self) -> str:
         # records is now List[W1RecordGroup]

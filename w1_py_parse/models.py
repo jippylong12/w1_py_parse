@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Union
 import json
 
 @dataclass
@@ -28,7 +28,7 @@ class W1RecordGroup(dict):
 class DaRootRecord(RRCRecord):
     status_number: int
     status_sequence_number: int
-    county_code: int
+    county_code: Union[int, str]
     lease_name: str
     district: int
     operator_number: int
@@ -64,7 +64,7 @@ class DaRootRecord(RRCRecord):
 class DaPermitRecord(RRCRecord):
     permit_number: int
     sequence_number: int
-    county_code: int
+    county_code: Union[int, str]
     lease_name: str
     district: int
     well_number: str
@@ -76,7 +76,7 @@ class DaPermitRecord(RRCRecord):
     zip_code_prefix: str
     zip_code_suffix: str
     fiche_set_number: int
-    onshore_county: int
+    onshore_county: Union[int, str]
     received_date: str
     issued_date: str
     amended_date: str
