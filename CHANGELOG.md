@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.1] - 2025-12-10
+
+### Changed
+- Removed `filler` and `tape_filler` fields from `DaFieldSpecificRecord` and `DaFieldBhlRecord` models and schemas to clean up output.
+
+## [0.5.0] - 2025-12-10
+
+### Added
+- Support for Schema 05 (Segment 5 - DAFLDBHL) parsing.
+- `DaFieldBhlRecord` model.
+- `parser.py` logic to handle '05' records.
+
 ## [0.4.0] - 2025-12-10
 
 ### Added

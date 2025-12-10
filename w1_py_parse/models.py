@@ -152,5 +152,25 @@ class DaFieldSpecificRecord(RRCRecord):
     field_total_depth: int
     field_well_number: str
     field_acres: str
-    filler: str
-    tape_filler: str
+
+@dataclass
+class DaFieldBhlRecord(RRCRecord):
+    bhl_section: str
+    bhl_block: str
+    bhl_abstract: str
+    bhl_survey: str
+    bhl_acres: str
+    bhl_nearest_well: str
+    bhl_lease_feet_1: str
+    bhl_lease_direction_1: str
+    bhl_lease_feet_2: str
+    bhl_lease_direction_2: str
+    bhl_survey_feet_1: str
+    bhl_survey_direction_1: str
+    bhl_survey_feet_2: str
+    bhl_survey_direction_2: str
+    bhl_county: str
+    bhl_pntrt_dist_1: str
+    bhl_pntrt_dir_1: str
+    bhl_pntrt_dist_2: str
+    bhl_pntrt_dir_2: str
