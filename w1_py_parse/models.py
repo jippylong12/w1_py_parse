@@ -13,7 +13,7 @@ class RRCRecord:
         return json.dumps(self.to_dict(), default=str)
 
 @dataclass
-class Schema01Record(RRCRecord):
+class DaRootRecord(RRCRecord):
     status_number: int
     status_sequence_number: int
     county_code: int

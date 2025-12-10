@@ -1,1 +1,26 @@
-from .schema_01 import SCHEMA_01_FIELDS
+from .da_root import DA_ROOT_FIELDS
+
+SCHEMA_ID_TO_NAME = {
+    "01": "DAROOT",
+    "02": "DAPERMIT",
+    "03": "DAFIELD",
+    "04": "DAFLDSPC",
+    "05": "DAFLDBHL",
+    "06": "DACANRES",
+    "07": "DACANFLD",
+    "08": "DAFRERES",
+    "09": "DAFREFLD",
+    "10": "DAPMTBHL",
+    "11": "DAALTADD",
+    "12": "DAREMARK",
+    "13": "DACHECK",
+    "14": "DAW999A1",
+    "15": "DAW999B1",
+}
+
+SCHEMA_NAME_TO_ID = {v: k for k, v in SCHEMA_ID_TO_NAME.items()}
+
+# Registry of implemented schemas
+SCHEMA_FIELDS = {
+    "01": DA_ROOT_FIELDS,
+}

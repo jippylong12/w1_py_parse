@@ -122,7 +122,7 @@ from typing import List, Tuple, Union
 #         I noted this in planning.
 #         Let's assume text layout matches the explicit positions.
 
-SCHEMA_01_FIELDS = [
+DA_ROOT_FIELDS = [
     ("record_id", 1, 2, "str"),
     ("status_number", 3, 7, "int"),
     ("status_sequence_number", 10, 2, "int"),
