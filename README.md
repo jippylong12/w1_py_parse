@@ -27,3 +27,18 @@ print(parser.records)
 **Made almost entirely with Google DeepMind's Gemini 3 Pro.**
 
 This project serves as a demonstration of the capabilities of advanced AI in software development.
+
+## Publishing to PyPI
+
+To publish this package to PyPI, run the following commands:
+
+```bash
+# Clean up previous builds
+rm -rf dist/*
+
+# Build the package
+python3 setup.py sdist bdist_wheel
+
+# Upload to PyPI
+twine upload dist/*
+```
