@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2025-12-10
+
+### Added
+- Support for Schema 06 (Segment 6 - DACANRES) parsing.
+- `DaCanRestrRecord` model.
+- Recurring segment support: Segment 06 records are parsed into a list `current_record['06']`.
+
 ## [0.5.1] - 2025-12-10
 
 ### Changed

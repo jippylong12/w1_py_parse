@@ -174,3 +174,10 @@ class DaFieldBhlRecord(RRCRecord):
     bhl_pntrt_dir_1: str
     bhl_pntrt_dist_2: str
     bhl_pntrt_dir_2: str
+
+@dataclass
+class DaCanRestrRecord(RRCRecord):
+    restriction_key: int
+    restriction_type: str
+    restriction_remark: str
+    restriction_flag: str

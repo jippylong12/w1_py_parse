@@ -4,7 +4,8 @@ from .schemas.da_permit import DA_PERMIT_FIELDS
 from .schemas.da_field import DA_FIELD_FIELDS
 from .schemas.da_field_specific import DA_FIELD_SPECIFIC_FIELDS
 from .schemas.da_field_bhl import DA_FIELD_BHL_FIELDS
-from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, W1RecordGroup
+from .schemas.da_can_restr import DA_CAN_RESTR_FIELDS
+from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, W1RecordGroup
 import json
 
 class W1Parser:
@@ -63,7 +64,15 @@ class W1Parser:
                              parsed_record = self._parse_da_field_specific(line)
                         elif record_id == '05':
                              parsed_record = self._parse_da_field_bhl(line)
-                        
+                        elif record_id == '06':
+                             parsed_record = self._parse_da_can_restr(line)
+                             if parsed_record:
+                                if '06' not in current_record:
+                                    current_record['06'] = []
+                                current_record['06'].append(parsed_record)
+                                # Set to None so it doesn't get added by the generic logic below
+                                parsed_record = None
+
                         # Add to current record if parsed
                         if parsed_record:
                             current_record[record_id] = parsed_record
@@ -121,6 +130,10 @@ class W1Parser:
     def _parse_da_field_bhl(self, line: str) -> DaFieldBhlRecord:
         data = self._extract_fields(line, DA_FIELD_BHL_FIELDS)
         return DaFieldBhlRecord(**data)
+
+    def _parse_da_can_restr(self, line: str) -> DaCanRestrRecord:
+        data = self._extract_fields(line, DA_CAN_RESTR_FIELDS)
+        return DaCanRestrRecord(**data)
 
     def _extract_fields(self, line: str, fields: List[Any]) -> Dict[str, Any]:
         data = {}
