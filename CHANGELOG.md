@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2025-12-10
+
+### Changed
+- `W1Parser.parse_file` now returns `List[Dict[str, Any]]` instead of `None`.
+- Output structure is now hierarchical, grouped by the Root Segment ('01').
+- `to_json` output updated to match the new hierarchical structure.
+
 ## [0.2.0] - 2025-12-10
 
 ### Added

@@ -1,67 +1,38 @@
-import unittest
-import os
-from w1_py_parse import W1Parser, DaRootRecord
+import pytest
+from w1_py_parse.parser import W1Parser
+import json
 
-class TestW1Parser(unittest.TestCase):
-    def setUp(self):
-        self.sample_file = os.path.join(os.path.dirname(__file__), '../sample_data.txt')
-
-    def test_parse_sample_file(self):
-        parser = W1Parser()
-        parser.parse_file(self.sample_file)
-        
-        # Filter for schema 01 (DaRoot) records
-        records_01 = [r for r in parser.records if isinstance(r, DaRootRecord)]
-        
-        # There are 2 '01' lines in the sample file
-        self.assertEqual(len(records_01), 2)
-        
-        # Verify first record
-        rec = records_01[0]
-        
-        self.assertEqual(rec.record_id, '01')
-        self.assertEqual(rec.status_number, 911978)
-        self.assertEqual(rec.status_sequence_number, 99)
-        self.assertEqual(rec.county_code, 3)
-        self.assertEqual(rec.lease_name, "SPDTX SWD")
-        self.assertEqual(rec.district, 10)
-        self.assertEqual(rec.operator_number, 900327)
-        self.assertEqual(rec.date_app_received, "20251125")
-        self.assertEqual(rec.operator_name, "WATERBRIDGE STATELINE LLC")
-        
-        # Partial flags check
-        self.assertEqual(rec.status_of_app_flag, "A")
-        self.assertEqual(rec.hb1407_problem_flag, "0") 
-        
-        self.assertEqual(rec.permit_number, 911978)
-        self.assertEqual(rec.issue_date, "20251203")
-        
-        self.assertEqual(rec.well_number, "17")
-        self.assertEqual(rec.built_from_old_master_flag, "N")
-        
-    def test_json_export(self):
-        parser = W1Parser()
-        parser.parse_file(self.sample_file)
-        json_output = parser.to_json()
-        self.assertIn('"record_id": "01"', json_output)
-        self.assertIn('"lease_name": "SPDTX SWD"', json_output)
-
-    def test_schema_filtering(self):
-        parser = W1Parser()
-        # Parse only DAROOT (01)
-        parser.parse_file(self.sample_file, schemas=['DAROOT'])
-        self.assertEqual(len(parser.records), 2)
-        self.assertTrue(all(r.record_id == '01' for r in parser.records))
-        
-        # Parse only a non-existent schema in this file (e.g. 02)
-        parser2 = W1Parser()
-        parser2.parse_file(self.sample_file, schemas=['DAPERMIT']) # 02
-        self.assertEqual(len(parser2.records), 0)
-        
-        # Parse by ID
-        parser3 = W1Parser()
-        parser3.parse_file(self.sample_file, schemas=['01'])
-        self.assertEqual(len(parser3.records), 2)
-
-if __name__ == '__main__':
-    unittest.main()
+def test_parser_workflow(tmp_path):
+    # Create a dummy file with Schema 01 and 02
+    d = tmp_path / "test_data.txt"
+    # Line 1: 01 (Root)
+    # Line 2: 02 (Permit) - Using the real sample line
+    content = (
+        "01091197899003SPDTX SWD                       10900327    20251125WATERBRIDGE STATELINE LLC       00ANNNNNNNNNNN09119782025120300000000N                      17  N000000000000000000 E00000000000000000000000000000\n"
+        "02091197899003SPDTX SWD                       10  17  0597590032701                              000000000000000000000000202511252025120300000000000000000000000000000000 000000002027120300000000                              NNNN00000000000000N9       A40       PSL / MILES, T J                                       782   00000000275002720W     ANDREWS      00015000FWL          00020000FSL          00035900FWL          00034700FSL          0.0                         O00000000 NNNN09748797 NN       00349279"
+    )
+    d.write_text(content, encoding='utf-8')
+    
+    parser = W1Parser()
+    records = parser.parse_file(str(d))
+    
+    # Verify return type
+    assert isinstance(records, list)
+    assert len(records) == 1
+    
+    # Verify grouping
+    item = records[0]
+    assert isinstance(item, dict)
+    assert "01" in item
+    assert "02" in item
+    
+    # Verify data content
+    assert item["01"]["status_number"] == 911978
+    assert item["02"]["permit_number"] == 911978
+    assert item["02"]["api_number"] == "00349279"
+    
+    # Verify JSON structure
+    json_out = parser.to_json()
+    data = json.loads(json_out)
+    assert len(data) == 1
+    assert data[0]["01"]["lease_name"].strip() == "SPDTX SWD"

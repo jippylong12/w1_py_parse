@@ -6,9 +6,9 @@ import json
 
 class W1Parser:
     def __init__(self):
-        self.records: List[RRCRecord] = []
+        self.records: List[Dict[str, Any]] = []
 
-    def parse_file(self, filepath: str, schemas: Optional[List[Union[str, int]]] = None) -> None:
+    def parse_file(self, filepath: str, schemas: Optional[List[Union[str, int]]] = None) -> List[Dict[str, Any]]:
         """
         Parse a W1/RRC data file.
         
@@ -16,12 +16,65 @@ class W1Parser:
             filepath: Path to the file.
             schemas: List of schema identifiers to parse. Can be IDs ('01', 1) or names ('DAROOT').
                      If None, defaults to parsing all known/supported schemas.
+                     
+        Returns:
+            List[Dict[str, Any]]: A list of dictionaries, where each dictionary represents 
+            a grouped record starting with segment '01'.
         """
         allowed_ids = self._normalize_schema_filter(schemas)
         
+        current_record: Dict[str, Any] = {}
+        
         with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
             for line in f:
-                self.parse_line(line, allowed_ids)
+                if len(line) < 2:
+                    continue
+                
+                record_id = line[0:2]
+                
+                # Check filter
+                if allowed_ids is not None and record_id not in allowed_ids:
+                    continue
+                
+                if record_id == '01':
+                    # Start of a new logical record
+                    # If we were building one, save it
+                    if current_record:
+                        self.records.append(current_record)
+                    
+                    # Parse 01
+                    root_record = self._parse_da_root(line)
+                    # Initialize new dict with 01 data
+                    current_record = {
+                        "01": root_record.to_dict()
+                    }
+                    
+                else:
+                    # Sub-segment
+                    if not current_record and record_id != '01':
+                         # Orphaned sub-segment or filter excluded 01?
+                         # Decision: If we haven't seen an 01 yet, we can't really group it properly 
+                         # unless we support partial records.
+                         # For now, let's just append raw if we have a current_record
+                         # or skip? 
+                         # User requirement: "Grouped by segment". 
+                         # We will assume standard file structure 01...02...
+                         pass
+                    
+                    if current_record:
+                        parsed_record = None
+                        if record_id == '02':
+                             parsed_record = self._parse_da_permit(line)
+                        
+                        # Add to current record if parsed
+                        if parsed_record:
+                            current_record[record_id] = parsed_record.to_dict()
+
+            # End of file: append last record
+            if current_record:
+                self.records.append(current_record)
+                
+        return self.records
 
     def _normalize_schema_filter(self, schemas: Optional[List[Union[str, int]]]) -> Optional[Set[str]]:
         if schemas is None:
@@ -45,25 +98,11 @@ class W1Parser:
         return allowed
 
     def parse_line(self, line: str, allowed_ids: Optional[Set[str]] = None) -> None:
-        if len(line) < 2:
-            return
-        
-        record_id = line[0:2]
-        
-        # Check filter
-        if allowed_ids is not None and record_id not in allowed_ids:
-            return
-        
-        if record_id == '01':
-            record = self._parse_da_root(line)
-            self.records.append(record)
-        elif record_id == '02':
-            record = self._parse_da_permit(line)
-            self.records.append(record)
-        # Add other schemas here as they are implemented (03-15)
-        else:
-             # Ideally we keep track of unparsed lines or generic records
-             pass
+        """
+        Deprecated/Internal: parses a single line. 
+        Note: This is stateless and doesn't support grouping on its own.
+        """
+        pass
 
     def _parse_da_root(self, line: str) -> DaRootRecord:
         data = self._extract_fields(line, DA_ROOT_FIELDS)
@@ -106,4 +145,5 @@ class W1Parser:
         return data
 
     def to_json(self) -> str:
-        return json.dumps([r.to_dict() for r in self.records], default=str, indent=2)
+        # records is now List[Dict]
+        return json.dumps(self.records, default=str, indent=2)
