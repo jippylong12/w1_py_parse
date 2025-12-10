@@ -1,5 +1,6 @@
 from .da_root import DA_ROOT_FIELDS
 from .da_permit import DA_PERMIT_FIELDS
+from .da_field import DA_FIELD_FIELDS
 
 SCHEMA_ID_TO_NAME = {
     "01": "DAROOT",
@@ -25,4 +26,5 @@ SCHEMA_NAME_TO_ID = {v: k for k, v in SCHEMA_ID_TO_NAME.items()}
 SCHEMA_FIELDS = {
     "01": DA_ROOT_FIELDS,
     "02": DA_PERMIT_FIELDS,
+    "03": DA_FIELD_FIELDS,
 }

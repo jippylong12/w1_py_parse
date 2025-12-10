@@ -126,3 +126,21 @@ class DaPermitRecord(RRCRecord):
     duplicate_permit_flag: str
     nearest_lease_line: str
     api_number: str
+
+@dataclass
+class DaFieldRecord(RRCRecord):
+    field_number: int
+    field_application_well_code: str
+    field_completion_well_code: str
+    field_completion_code: str
+    field_transfer_code: str
+    field_validation_century: int
+    field_validation_year: int
+    field_validation_month: int
+    field_validation_day: int
+    field_completion_century: int
+    field_completion_year: int
+    field_completion_month: int
+    field_completion_day: int
+    field_rule37_flag: str
+    field_rule38_flag: str

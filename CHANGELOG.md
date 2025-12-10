@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2025-12-10
+
+### Added
+- Support for Schema 03 (Segment 3 - DAFIELD) parsing.
+- `DaFieldRecord` model for Field Segment.
+- `parser.py` logic to handle '03' records.
+- Updated `README.md` with usage examples and publishing instructions.
+
 ## [0.2.3] - 2025-12-10
 
 ### Changed
