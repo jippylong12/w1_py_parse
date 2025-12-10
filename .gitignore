@@ -15,15 +15,13 @@ venv/
 env/
 
 # Build artifacts
-dist/          # The distribution files you will upload to PyPI
-build/         # Temporary build directory
+dist/*
+build/*
 *.egg-info/
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints
 
-*.tar
-*.tar.gz
-*.gz
 
+.env
 sample_data.txt
