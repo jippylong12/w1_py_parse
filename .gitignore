@@ -26,6 +26,4 @@ build/*
 .env
 sample_data.txt
 
-.sample
-
 deploy.sh

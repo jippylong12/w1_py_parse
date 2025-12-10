@@ -2,7 +2,8 @@ from typing import List, Dict, Any, Union, Optional, Set
 from .schemas import DA_ROOT_FIELDS, SCHEMA_ID_TO_NAME, SCHEMA_NAME_TO_ID
 from .schemas.da_permit import DA_PERMIT_FIELDS
 from .schemas.da_field import DA_FIELD_FIELDS
-from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, W1RecordGroup
+from .schemas.da_field_specific import DA_FIELD_SPECIFIC_FIELDS
+from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, W1RecordGroup
 import json
 
 class W1Parser:
@@ -57,6 +58,8 @@ class W1Parser:
                              parsed_record = self._parse_da_permit(line)
                         elif record_id == '03':
                              parsed_record = self._parse_da_field(line)
+                        elif record_id == '04':
+                             parsed_record = self._parse_da_field_specific(line)
                         
                         # Add to current record if parsed
                         if parsed_record:
@@ -107,6 +110,10 @@ class W1Parser:
     def _parse_da_field(self, line: str) -> DaFieldRecord:
         data = self._extract_fields(line, DA_FIELD_FIELDS)
         return DaFieldRecord(**data)
+
+    def _parse_da_field_specific(self, line: str) -> DaFieldSpecificRecord:
+        data = self._extract_fields(line, DA_FIELD_SPECIFIC_FIELDS)
+        return DaFieldSpecificRecord(**data)
 
     def _extract_fields(self, line: str, fields: List[Any]) -> Dict[str, Any]:
         data = {}

@@ -144,3 +144,13 @@ class DaFieldRecord(RRCRecord):
     field_completion_day: int
     field_rule37_flag: str
     field_rule38_flag: str
+
+@dataclass
+class DaFieldSpecificRecord(RRCRecord):
+    field_district: int
+    field_lease_name: str
+    field_total_depth: int
+    field_well_number: str
+    field_acres: str
+    filler: str
+    tape_filler: str

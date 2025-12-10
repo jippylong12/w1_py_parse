@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2025-12-10
+
+### Added
+- Support for Schema 04 (Segment 4 - DAFLDSPC) parsing.
+- `DaFieldSpecificRecord` model.
+- `parser.py` logic to handle '04' records.
+
 ## [0.3.0] - 2025-12-10
 
 ### Added
