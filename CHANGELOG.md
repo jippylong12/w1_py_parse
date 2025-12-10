@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2025-12-10
+
+### Added
+- Support for Schema 02 (Segment 2 - DAPERMIT) parsing.
+- `DaPermitRecord` model for Permit Master Segment.
+- Unit tests for Schema 02 using real data samples.
+
 ## [0.1.3] - 2025-12-10
 
 ### Changed

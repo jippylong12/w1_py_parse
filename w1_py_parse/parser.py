@@ -1,6 +1,7 @@
 from typing import List, Dict, Any, Union, Optional, Set
 from .schemas import DA_ROOT_FIELDS, SCHEMA_ID_TO_NAME, SCHEMA_NAME_TO_ID
-from .models import RRCRecord, DaRootRecord
+from .schemas.da_permit import DA_PERMIT_FIELDS
+from .models import RRCRecord, DaRootRecord, DaPermitRecord
 import json
 
 class W1Parser:
@@ -56,14 +57,25 @@ class W1Parser:
         if record_id == '01':
             record = self._parse_da_root(line)
             self.records.append(record)
-        # Add other schemas here as they are implemented (02-15)
+        elif record_id == '02':
+            record = self._parse_da_permit(line)
+            self.records.append(record)
+        # Add other schemas here as they are implemented (03-15)
         else:
              # Ideally we keep track of unparsed lines or generic records
              pass
 
     def _parse_da_root(self, line: str) -> DaRootRecord:
+        data = self._extract_fields(line, DA_ROOT_FIELDS)
+        return DaRootRecord(**data)
+
+    def _parse_da_permit(self, line: str) -> DaPermitRecord:
+        data = self._extract_fields(line, DA_PERMIT_FIELDS)
+        return DaPermitRecord(**data)
+
+    def _extract_fields(self, line: str, fields: List[Any]) -> Dict[str, Any]:
         data = {}
-        for name, start, length, type_ in DA_ROOT_FIELDS:
+        for name, start, length, type_ in fields:
             # 1-based start index to 0-based
             idx = start - 1
             # Ensure line is long enough
@@ -91,8 +103,7 @@ class W1Parser:
                 val = raw_val.strip()
                 
             data[name] = val
-            
-        return DaRootRecord(**data)
+        return data
 
     def to_json(self) -> str:
         return json.dumps([r.to_dict() for r in self.records], default=str, indent=2)
