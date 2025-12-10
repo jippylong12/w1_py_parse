@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.3] - 2025-12-10
+
+### Changed
+- `W1Parser.parse_file` now stores `RRCRecord` objects within the group, instead of dictionaries.
+- `W1RecordGroup.to_json()` and `W1Parser.to_json()` updated to handle object serialization recursively.
+- `parser.records[i][segment_id]` now returns an object with attribute access (e.g., `.api_number`), which also supports `.to_json()`.
+
 ## [0.2.2] - 2025-12-10
 
 ### Added

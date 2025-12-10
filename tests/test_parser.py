@@ -1,13 +1,11 @@
 import pytest
 from w1_py_parse.parser import W1Parser
-from w1_py_parse.models import W1RecordGroup
+from w1_py_parse.models import W1RecordGroup, DaRootRecord, DaPermitRecord
 import json
 
 def test_parser_workflow(tmp_path):
     # Create a dummy file with Schema 01 and 02
     d = tmp_path / "test_data.txt"
-    # Line 1: 01 (Root)
-    # Line 2: 02 (Permit) - Using the real sample line
     content = (
         "01091197899003SPDTX SWD                       10900327    20251125WATERBRIDGE STATELINE LLC       00ANNNNNNNNNNN09119782025120300000000N                      17  N000000000000000000 E00000000000000000000000000000\n"
         "02091197899003SPDTX SWD                       10  17  0597590032701                              000000000000000000000000202511252025120300000000000000000000000000000000 000000002027120300000000                              NNNN00000000000000N9       A40       PSL / MILES, T J                                       782   00000000275002720W     ANDREWS      00015000FWL          00020000FSL          00035900FWL          00034700FSL          0.0                         O00000000 NNNN09748797 NN       00349279"
@@ -21,24 +19,34 @@ def test_parser_workflow(tmp_path):
     assert isinstance(records, list)
     assert len(records) == 1
     
-    # Verify grouping type - THIS IS NEW
+    # Verify grouping type
     item = records[0]
     assert isinstance(item, W1RecordGroup)
-    assert isinstance(item, dict) # Should still be a dict
     
     assert "01" in item
     assert "02" in item
     
-    # Verify to_json method works on the ITEM itself
+    # Verify content types (THIS IS NEW)
+    # They should be objects now, not dicts
+    assert isinstance(item["01"], DaRootRecord)
+    assert isinstance(item["02"], DaPermitRecord)
+    
+    # Verify we can access fields as attributes
+    assert item["01"].status_number == 911978
+    assert item["02"].api_number == "00349279"
+    
+    # Verify object-level .to_json() (THIS WAS THE REQUEST)
+    root_json = item["01"].to_json()
+    assert isinstance(root_json, str)
+    root_dict = json.loads(root_json)
+    assert root_dict["status_number"] == 911978
+    
+    # Verify group-level .to_json() still works
     item_json = item.to_json()
     assert isinstance(item_json, str)
     item_dict = json.loads(item_json)
     assert "01" in item_dict
     assert item_dict["02"]["api_number"] == "00349279"
-    
-    # Verify data content
-    assert item["01"]["status_number"] == 911978
-    assert item["02"]["permit_number"] == 911978
     
     # Verify Parser level to_json still works
     json_out = parser.to_json()

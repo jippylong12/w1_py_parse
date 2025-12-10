@@ -18,7 +18,11 @@ class W1RecordGroup(dict):
     and provides a .to_json() method.
     """
     def to_json(self) -> str:
-        return json.dumps(self, default=str)
+        def default_serializer(obj):
+            if hasattr(obj, 'to_dict'):
+                return obj.to_dict()
+            return str(obj)
+        return json.dumps(self, default=default_serializer)
 
 @dataclass
 class DaRootRecord(RRCRecord):

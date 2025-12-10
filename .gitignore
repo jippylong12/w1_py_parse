@@ -27,3 +27,5 @@ build/*
 sample_data.txt
 
 .sample
+
+deploy.sh

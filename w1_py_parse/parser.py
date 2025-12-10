@@ -45,7 +45,7 @@ class W1Parser:
                     root_record = self._parse_da_root(line)
                     # Initialize new group with 01 data
                     current_record = W1RecordGroup()
-                    current_record["01"] = root_record.to_dict()
+                    current_record["01"] = root_record
                     
                 else:
                     # Sub-segment
@@ -57,14 +57,14 @@ class W1Parser:
                         
                         # Add to current record if parsed
                         if parsed_record:
-                            current_record[record_id] = parsed_record.to_dict()
+                            current_record[record_id] = parsed_record
 
             # End of file: append last record
             if current_record is not None:
                 self.records.append(current_record)
                 
         return self.records
-
+    
     def _normalize_schema_filter(self, schemas: Optional[List[Union[str, int]]]) -> Optional[Set[str]]:
         if schemas is None:
             return None # All permitted
@@ -134,5 +134,9 @@ class W1Parser:
         return data
 
     def to_json(self) -> str:
-        # records is now List[Dict]
-        return json.dumps(self.records, default=str, indent=2)
+        # records is now List[W1RecordGroup]
+        def default_serializer(obj):
+            if hasattr(obj, 'to_dict'):
+                return obj.to_dict()
+            return str(obj)
+        return json.dumps(self.records, default=default_serializer, indent=2)
