@@ -1,0 +1,29 @@
+# Byte-compiled / optimized / test files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.egg
+
+# Editor/OS temporary files
+*~
+.DS_Store
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Build artifacts
+dist/          # The distribution files you will upload to PyPI
+build/         # Temporary build directory
+*.egg-info/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+*.tar
+*.tar.gz
+*.gz
+
+sample_data.txt
