@@ -218,3 +218,8 @@ class DaPermitBhlRecord(RRCRecord):
     bhl_pntrt_dir_1: str
     bhl_pntrt_dist_2: str
     bhl_pntrt_dir_2: str
+
+@dataclass
+class DaAlternateAddressRecord(RRCRecord):
+    address_key: str
+    address_line: str

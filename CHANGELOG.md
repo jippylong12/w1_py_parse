@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.11.0] - 2025-12-10
+
+### Added
+- Support for Schema 11 (Segment 11 - DAALTADD) parsing.
+- `DaAlternateAddressRecord` model.
+- Recurring segment support for '11'.
+
 ## [0.10.0] - 2025-12-10
 
 ### Added
