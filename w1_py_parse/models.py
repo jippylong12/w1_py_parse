@@ -185,3 +185,10 @@ class DaCanRestrRecord(RRCRecord):
 @dataclass
 class DaCanRestrFieldRecord(RRCRecord):
     field_number: str
+
+@dataclass
+class DaFreeRestrRecord(RRCRecord):
+    restriction_key: int
+    restriction_type: str
+    restriction_remark: str
+    restriction_flag: str

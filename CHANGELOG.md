@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.0] - 2025-12-10
+
+### Added
+- Support for Schema 08 (Segment 8 - DAFRERES) parsing.
+- `DaFreeRestrRecord` model.
+- Recurring segment support for '08'.
+
 ## [0.7.0] - 2025-12-10
 
 ### Added
