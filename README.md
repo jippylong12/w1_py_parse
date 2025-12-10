@@ -18,9 +18,8 @@ pip install w1_py_parse
 from w1_py_parse.parser import RRCParser
 
 parser = RRCParser()
-result = parser.parse("path/to/data.dat")
-print(result.header)
-print(result.records)
+parser.parse_file("path/to/data.dat")
+print(parser.records)
 ```
 
 ## Credits
