@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.15.0] - 2025-12-10
+
+### Added
+- Support for Schema 15 (Segment 15 - DAW999B1) parsing.
+- `DaBottomHoleLocationRecord` model.
+- Recurring segment support for '15' (GIS Data).
+
 ## [0.14.0] - 2025-12-10
 
 ### Added

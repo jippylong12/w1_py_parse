@@ -13,7 +13,8 @@ from .schemas.da_alternate_addr import DA_ALTERNATE_ADDR_FIELDS
 from .schemas.da_remark import DA_REMARK_FIELDS
 from .schemas.da_check_register import DA_CHECK_REGISTER_FIELDS
 from .schemas.da_surface_loc import DA_SURFACE_LOC_FIELDS
-from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, DaCanRestrFieldRecord, DaFreeRestrRecord, DaFreeRestrFieldRecord, DaPermitBhlRecord, DaAlternateAddressRecord, DaRemarkRecord, DaCheckRegisterRecord, DaSurfaceLocationRecord, W1RecordGroup
+from .schemas.da_bottom_hole_loc import DA_BOTTOM_HOLE_LOC_FIELDS
+from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, DaCanRestrFieldRecord, DaFreeRestrRecord, DaFreeRestrFieldRecord, DaPermitBhlRecord, DaAlternateAddressRecord, DaRemarkRecord, DaCheckRegisterRecord, DaSurfaceLocationRecord, DaBottomHoleLocationRecord, W1RecordGroup
 import json
 
 class W1Parser:
@@ -127,6 +128,13 @@ class W1Parser:
                                 parsed_record = None
                         elif record_id == '14':
                              parsed_record = self._parse_da_surface_loc(line)
+                        elif record_id == '15':
+                             parsed_record = self._parse_da_bottom_hole_loc(line)
+                             if parsed_record:
+                                if '15' not in current_record:
+                                    current_record['15'] = []
+                                current_record['15'].append(parsed_record)
+                                parsed_record = None
                         
                         # Add to current record if parsed
                         if parsed_record:
@@ -221,6 +229,10 @@ class W1Parser:
     def _parse_da_surface_loc(self, line: str) -> DaSurfaceLocationRecord:
         data = self._extract_fields(line, DA_SURFACE_LOC_FIELDS)
         return DaSurfaceLocationRecord(**data)
+
+    def _parse_da_bottom_hole_loc(self, line: str) -> DaBottomHoleLocationRecord:
+        data = self._extract_fields(line, DA_BOTTOM_HOLE_LOC_FIELDS)
+        return DaBottomHoleLocationRecord(**data)
 
     def _extract_fields(self, line: str, fields: List[Any]) -> Dict[str, Any]:
         data = {}

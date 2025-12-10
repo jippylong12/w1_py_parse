@@ -245,3 +245,8 @@ class DaCheckRegisterRecord(RRCRecord):
 class DaSurfaceLocationRecord(RRCRecord):
     longitude: str
     latitude: str
+
+@dataclass
+class DaBottomHoleLocationRecord(RRCRecord):
+    longitude: str
+    latitude: str
