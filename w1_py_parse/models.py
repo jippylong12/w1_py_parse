@@ -12,6 +12,14 @@ class RRCRecord:
     def to_json(self) -> str:
         return json.dumps(self.to_dict(), default=str)
 
+class W1RecordGroup(dict):
+    """
+    A custom dictionary that represents a grouped record (hierarchical)
+    and provides a .to_json() method.
+    """
+    def to_json(self) -> str:
+        return json.dumps(self, default=str)
+
 @dataclass
 class DaRootRecord(RRCRecord):
     status_number: int

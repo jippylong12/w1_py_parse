@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.2] - 2025-12-10
+
+### Added
+- `W1RecordGroup` custom dictionary class.
+- `.to_json()` method on parsed items (e.g., `parser.records[0].to_json()`).
+
 ## [0.2.1] - 2025-12-10
 
 ### Changed

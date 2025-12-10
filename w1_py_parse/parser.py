@@ -1,14 +1,14 @@
 from typing import List, Dict, Any, Union, Optional, Set
 from .schemas import DA_ROOT_FIELDS, SCHEMA_ID_TO_NAME, SCHEMA_NAME_TO_ID
 from .schemas.da_permit import DA_PERMIT_FIELDS
-from .models import RRCRecord, DaRootRecord, DaPermitRecord
+from .models import RRCRecord, DaRootRecord, DaPermitRecord, W1RecordGroup
 import json
 
 class W1Parser:
     def __init__(self):
-        self.records: List[Dict[str, Any]] = []
+        self.records: List[W1RecordGroup] = []
 
-    def parse_file(self, filepath: str, schemas: Optional[List[Union[str, int]]] = None) -> List[Dict[str, Any]]:
+    def parse_file(self, filepath: str, schemas: Optional[List[Union[str, int]]] = None) -> List[W1RecordGroup]:
         """
         Parse a W1/RRC data file.
         
@@ -18,12 +18,11 @@ class W1Parser:
                      If None, defaults to parsing all known/supported schemas.
                      
         Returns:
-            List[Dict[str, Any]]: A list of dictionaries, where each dictionary represents 
-            a grouped record starting with segment '01'.
+            List[W1RecordGroup]: A list of grouped records. Use .to_json() on items.
         """
         allowed_ids = self._normalize_schema_filter(schemas)
         
-        current_record: Dict[str, Any] = {}
+        current_record: Optional[W1RecordGroup] = None
         
         with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
             for line in f:
@@ -39,29 +38,19 @@ class W1Parser:
                 if record_id == '01':
                     # Start of a new logical record
                     # If we were building one, save it
-                    if current_record:
+                    if current_record is not None:
                         self.records.append(current_record)
                     
                     # Parse 01
                     root_record = self._parse_da_root(line)
-                    # Initialize new dict with 01 data
-                    current_record = {
-                        "01": root_record.to_dict()
-                    }
+                    # Initialize new group with 01 data
+                    current_record = W1RecordGroup()
+                    current_record["01"] = root_record.to_dict()
                     
                 else:
                     # Sub-segment
-                    if not current_record and record_id != '01':
-                         # Orphaned sub-segment or filter excluded 01?
-                         # Decision: If we haven't seen an 01 yet, we can't really group it properly 
-                         # unless we support partial records.
-                         # For now, let's just append raw if we have a current_record
-                         # or skip? 
-                         # User requirement: "Grouped by segment". 
-                         # We will assume standard file structure 01...02...
-                         pass
-                    
-                    if current_record:
+                    # We only process sub-segments if we have an active 01 record
+                    if current_record is not None:
                         parsed_record = None
                         if record_id == '02':
                              parsed_record = self._parse_da_permit(line)
@@ -71,7 +60,7 @@ class W1Parser:
                             current_record[record_id] = parsed_record.to_dict()
 
             # End of file: append last record
-            if current_record:
+            if current_record is not None:
                 self.records.append(current_record)
                 
         return self.records

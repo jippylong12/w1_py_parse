@@ -1,5 +1,6 @@
 import pytest
 from w1_py_parse.parser import W1Parser
+from w1_py_parse.models import W1RecordGroup
 import json
 
 def test_parser_workflow(tmp_path):
@@ -20,18 +21,26 @@ def test_parser_workflow(tmp_path):
     assert isinstance(records, list)
     assert len(records) == 1
     
-    # Verify grouping
+    # Verify grouping type - THIS IS NEW
     item = records[0]
-    assert isinstance(item, dict)
+    assert isinstance(item, W1RecordGroup)
+    assert isinstance(item, dict) # Should still be a dict
+    
     assert "01" in item
     assert "02" in item
+    
+    # Verify to_json method works on the ITEM itself
+    item_json = item.to_json()
+    assert isinstance(item_json, str)
+    item_dict = json.loads(item_json)
+    assert "01" in item_dict
+    assert item_dict["02"]["api_number"] == "00349279"
     
     # Verify data content
     assert item["01"]["status_number"] == 911978
     assert item["02"]["permit_number"] == 911978
-    assert item["02"]["api_number"] == "00349279"
     
-    # Verify JSON structure
+    # Verify Parser level to_json still works
     json_out = parser.to_json()
     data = json.loads(json_out)
     assert len(data) == 1
