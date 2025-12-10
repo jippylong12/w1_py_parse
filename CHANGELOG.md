@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.13.0] - 2025-12-10
+
+### Added
+- Support for Schema 13 (Segment 13 - DACHECK) parsing.
+- `DaCheckRegisterRecord` model.
+- Recurring segment support for '13'.
+
 ## [0.12.0] - 2025-12-10
 
 ### Added

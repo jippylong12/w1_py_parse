@@ -232,3 +232,11 @@ class DaRemarkRecord(RRCRecord):
     remark_date_month: int
     remark_date_day: int
     remark_line: str
+
+@dataclass
+class DaCheckRegisterRecord(RRCRecord):
+    register_date_century: int
+    register_date_year: int
+    register_date_month: int
+    register_date_day: int
+    register_number: int

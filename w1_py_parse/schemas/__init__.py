@@ -10,6 +10,7 @@ from .da_free_restr_field import DA_FREE_RESTR_FIELD_FIELDS
 from .da_permit_bhl import DA_PERMIT_BHL_FIELDS
 from .da_alternate_addr import DA_ALTERNATE_ADDR_FIELDS
 from .da_remark import DA_REMARK_FIELDS
+from .da_check_register import DA_CHECK_REGISTER_FIELDS
 
 SCHEMA_ID_TO_NAME = {
     "01": "DAROOT",
@@ -45,4 +46,5 @@ SCHEMA_FIELDS = {
     "10": DA_PERMIT_BHL_FIELDS,
     "11": DA_ALTERNATE_ADDR_FIELDS,
     "12": DA_REMARK_FIELDS,
+    "13": DA_CHECK_REGISTER_FIELDS,
 }
