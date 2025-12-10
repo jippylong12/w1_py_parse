@@ -6,6 +6,7 @@ from .da_field_bhl import DA_FIELD_BHL_FIELDS
 from .da_can_restr import DA_CAN_RESTR_FIELDS
 from .da_can_restr_field import DA_CAN_RESTR_FIELD_FIELDS
 from .da_free_restr import DA_FREE_RESTR_FIELDS
+from .da_free_restr_field import DA_FREE_RESTR_FIELD_FIELDS
 
 SCHEMA_ID_TO_NAME = {
     "01": "DAROOT",
@@ -37,4 +38,5 @@ SCHEMA_FIELDS = {
     "06": DA_CAN_RESTR_FIELDS,
     "07": DA_CAN_RESTR_FIELD_FIELDS,
     "08": DA_FREE_RESTR_FIELDS,
+    "09": DA_FREE_RESTR_FIELD_FIELDS,
 }

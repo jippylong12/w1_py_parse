@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.0] - 2025-12-10
+
+### Added
+- Support for Schema 09 (Segment 9 - DAFREFLD) parsing.
+- `DaFreeRestrFieldRecord` model.
+- Recurring segment support for '09'.
+
 ## [0.8.0] - 2025-12-10
 
 ### Added

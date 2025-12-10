@@ -192,3 +192,7 @@ class DaFreeRestrRecord(RRCRecord):
     restriction_type: str
     restriction_remark: str
     restriction_flag: str
+
+@dataclass
+class DaFreeRestrFieldRecord(RRCRecord):
+    field_number: str

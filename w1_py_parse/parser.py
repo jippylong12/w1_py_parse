@@ -7,7 +7,8 @@ from .schemas.da_field_bhl import DA_FIELD_BHL_FIELDS
 from .schemas.da_can_restr import DA_CAN_RESTR_FIELDS
 from .schemas.da_can_restr_field import DA_CAN_RESTR_FIELD_FIELDS
 from .schemas.da_free_restr import DA_FREE_RESTR_FIELDS
-from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, DaCanRestrFieldRecord, DaFreeRestrRecord, W1RecordGroup
+from .schemas.da_free_restr_field import DA_FREE_RESTR_FIELD_FIELDS
+from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, DaCanRestrFieldRecord, DaFreeRestrRecord, DaFreeRestrFieldRecord, W1RecordGroup
 import json
 
 class W1Parser:
@@ -88,7 +89,14 @@ class W1Parser:
                                     current_record['08'] = []
                                 current_record['08'].append(parsed_record)
                                 parsed_record = None
-
+                        elif record_id == '09':
+                             parsed_record = self._parse_da_free_restr_field(line)
+                             if parsed_record:
+                                if '09' not in current_record:
+                                    current_record['09'] = []
+                                current_record['09'].append(parsed_record)
+                                parsed_record = None
+                        
                         # Add to current record if parsed
                         if parsed_record:
                             current_record[record_id] = parsed_record
@@ -158,6 +166,10 @@ class W1Parser:
     def _parse_da_free_restr(self, line: str) -> DaFreeRestrRecord:
         data = self._extract_fields(line, DA_FREE_RESTR_FIELDS)
         return DaFreeRestrRecord(**data)
+
+    def _parse_da_free_restr_field(self, line: str) -> DaFreeRestrFieldRecord:
+        data = self._extract_fields(line, DA_FREE_RESTR_FIELD_FIELDS)
+        return DaFreeRestrFieldRecord(**data)
 
     def _extract_fields(self, line: str, fields: List[Any]) -> Dict[str, Any]:
         data = {}
