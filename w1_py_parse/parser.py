@@ -10,7 +10,8 @@ from .schemas.da_free_restr import DA_FREE_RESTR_FIELDS
 from .schemas.da_free_restr_field import DA_FREE_RESTR_FIELD_FIELDS
 from .schemas.da_permit_bhl import DA_PERMIT_BHL_FIELDS
 from .schemas.da_alternate_addr import DA_ALTERNATE_ADDR_FIELDS
-from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, DaCanRestrFieldRecord, DaFreeRestrRecord, DaFreeRestrFieldRecord, DaPermitBhlRecord, DaAlternateAddressRecord, W1RecordGroup
+from .schemas.da_remark import DA_REMARK_FIELDS
+from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, DaCanRestrFieldRecord, DaFreeRestrRecord, DaFreeRestrFieldRecord, DaPermitBhlRecord, DaAlternateAddressRecord, DaRemarkRecord, W1RecordGroup
 import json
 
 class W1Parser:
@@ -108,7 +109,14 @@ class W1Parser:
                                     current_record['11'] = []
                                 current_record['11'].append(parsed_record)
                                 parsed_record = None
-
+                        elif record_id == '12':
+                             parsed_record = self._parse_da_remark(line)
+                             if parsed_record:
+                                if '12' not in current_record:
+                                    current_record['12'] = []
+                                current_record['12'].append(parsed_record)
+                                parsed_record = None
+                        
                         # Add to current record if parsed
                         if parsed_record:
                             current_record[record_id] = parsed_record
@@ -190,6 +198,10 @@ class W1Parser:
     def _parse_da_alternate_addr(self, line: str) -> DaAlternateAddressRecord:
         data = self._extract_fields(line, DA_ALTERNATE_ADDR_FIELDS)
         return DaAlternateAddressRecord(**data)
+
+    def _parse_da_remark(self, line: str) -> DaRemarkRecord:
+        data = self._extract_fields(line, DA_REMARK_FIELDS)
+        return DaRemarkRecord(**data)
 
     def _extract_fields(self, line: str, fields: List[Any]) -> Dict[str, Any]:
         data = {}

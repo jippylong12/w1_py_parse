@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.12.0] - 2025-12-10
+
+### Added
+- Support for Schema 12 (Segment 12 - DAREMARK) parsing.
+- `DaRemarkRecord` model.
+- Recurring segment support for '12'.
+
 ## [0.11.0] - 2025-12-10
 
 ### Added

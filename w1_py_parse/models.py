@@ -223,3 +223,12 @@ class DaPermitBhlRecord(RRCRecord):
 class DaAlternateAddressRecord(RRCRecord):
     address_key: str
     address_line: str
+
+@dataclass
+class DaRemarkRecord(RRCRecord):
+    remark_sequence_number: int
+    remark_date_century: int
+    remark_date_year: int
+    remark_date_month: int
+    remark_date_day: int
+    remark_line: str
