@@ -12,7 +12,8 @@ from .schemas.da_permit_bhl import DA_PERMIT_BHL_FIELDS
 from .schemas.da_alternate_addr import DA_ALTERNATE_ADDR_FIELDS
 from .schemas.da_remark import DA_REMARK_FIELDS
 from .schemas.da_check_register import DA_CHECK_REGISTER_FIELDS
-from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, DaCanRestrFieldRecord, DaFreeRestrRecord, DaFreeRestrFieldRecord, DaPermitBhlRecord, DaAlternateAddressRecord, DaRemarkRecord, DaCheckRegisterRecord, W1RecordGroup
+from .schemas.da_surface_loc import DA_SURFACE_LOC_FIELDS
+from .models import RRCRecord, DaRootRecord, DaPermitRecord, DaFieldRecord, DaFieldSpecificRecord, DaFieldBhlRecord, DaCanRestrRecord, DaCanRestrFieldRecord, DaFreeRestrRecord, DaFreeRestrFieldRecord, DaPermitBhlRecord, DaAlternateAddressRecord, DaRemarkRecord, DaCheckRegisterRecord, DaSurfaceLocationRecord, W1RecordGroup
 import json
 
 class W1Parser:
@@ -124,6 +125,8 @@ class W1Parser:
                                     current_record['13'] = []
                                 current_record['13'].append(parsed_record)
                                 parsed_record = None
+                        elif record_id == '14':
+                             parsed_record = self._parse_da_surface_loc(line)
                         
                         # Add to current record if parsed
                         if parsed_record:
@@ -214,6 +217,10 @@ class W1Parser:
     def _parse_da_check_register(self, line: str) -> DaCheckRegisterRecord:
         data = self._extract_fields(line, DA_CHECK_REGISTER_FIELDS)
         return DaCheckRegisterRecord(**data)
+
+    def _parse_da_surface_loc(self, line: str) -> DaSurfaceLocationRecord:
+        data = self._extract_fields(line, DA_SURFACE_LOC_FIELDS)
+        return DaSurfaceLocationRecord(**data)
 
     def _extract_fields(self, line: str, fields: List[Any]) -> Dict[str, Any]:
         data = {}

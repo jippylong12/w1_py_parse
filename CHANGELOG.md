@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.14.0] - 2025-12-10
+
+### Added
+- Support for Schema 14 (Segment 14 - DAW999A1) parsing.
+- `DaSurfaceLocationRecord` model.
+- Non-recurring segment support for '14' (GIS Data).
+
 ## [0.13.0] - 2025-12-10
 
 ### Added

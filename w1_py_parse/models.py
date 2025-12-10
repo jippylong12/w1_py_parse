@@ -240,3 +240,8 @@ class DaCheckRegisterRecord(RRCRecord):
     register_date_month: int
     register_date_day: int
     register_number: int
+
+@dataclass
+class DaSurfaceLocationRecord(RRCRecord):
+    longitude: str
+    latitude: str
