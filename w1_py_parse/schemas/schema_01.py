@@ -133,7 +133,7 @@ SCHEMA_01_FIELDS = [
     ("converted_date_comp", 55, 4, "str"), # 4 bytes based on gap to 59
     ("date_app_received", 59, 8, "str"), # Century+Year+Month+Day
     ("operator_name", 67, 32, "str"),
-    ("filler_99", 99, 1, "str"),
+    # ("filler_99", 99, 1, "str"),
     ("hb1407_problem_flag", 100, 1, "str"),
     ("status_of_app_flag", 101, 1, "str"),
     ("not_enough_money_flag", 102, 1, "str"),
@@ -161,6 +161,6 @@ SCHEMA_01_FIELDS = [
     # Discrepancy handling:
     # Manual: 184 FILLER X(29). Next: 187.
     # We trust start positions. 187 - 184 = 3 bytes.
-    ("filler_184", 184, 3, "str"), 
-    ("tape_filler", 187, 324, "str"),
+    # ("filler_184", 184, 3, "str"), 
+    # ("tape_filler", 187, 324, "str"),
 ]

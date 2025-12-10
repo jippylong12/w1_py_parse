@@ -3,7 +3,7 @@ from .schemas import SCHEMA_01_FIELDS
 from .models import RRCRecord, Schema01Record
 import json
 
-class RRCParser:
+class W1Parser:
     def __init__(self):
         self.records: List[RRCRecord] = []
 

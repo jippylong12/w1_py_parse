@@ -1,13 +1,13 @@
 import unittest
 import os
-from w1_py_parse import RRCParser, Schema01Record
+from w1_py_parse import W1Parser, Schema01Record
 
-class TestRRCParser(unittest.TestCase):
+class TestW1Parser(unittest.TestCase):
     def setUp(self):
         self.sample_file = os.path.join(os.path.dirname(__file__), '../sample_data.txt')
 
     def test_parse_sample_file(self):
-        parser = RRCParser()
+        parser = W1Parser()
         parser.parse_file(self.sample_file)
         
         # Filter for schema 01 records
@@ -44,7 +44,7 @@ class TestRRCParser(unittest.TestCase):
         self.assertEqual(rec.built_from_old_master_flag, "N")
         
     def test_json_export(self):
-        parser = RRCParser()
+        parser = W1Parser()
         parser.parse_file(self.sample_file)
         json_output = parser.to_json()
         self.assertIn('"record_id": "01"', json_output)

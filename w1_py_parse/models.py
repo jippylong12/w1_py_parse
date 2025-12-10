@@ -47,6 +47,4 @@ class Schema01Record(RRCRecord):
     status_renumbered_from: int
     application_returned_flag: str
     ecap_filing_flag: str
-    filler_99: str
-    filler_184: str
-    tape_filler: str
+
